@@ -39,22 +39,49 @@ conMysql();
 function selectAll(table){
     return new Promise ((resolve,reject)=>{
         connection.query(`SELECT * FROM ${table}`,(error,result)=>{
-            if(error)return reject(error);
-            resolve(result);
+            return error ? reject(error) : resolve (result);
         })
     })
 }
 
 function selectOne(table,id){
+    return new Promise ((resolve,reject)=>{
+        connection.query(`SELECT * FROM ${table} WHERE id=${id}`,(error,result)=>{
+            return error ? reject(error) : resolve (result);
+        })
+    })
+}
 
+function insertItem(table,data){
+    return new Promise ((resolve,reject)=>{
+        connection.query(`INSERT INTO ${table} SET ?`, data, (error,result)=>{
+            return error ? reject(error) : resolve (result);
+        })
+    })
+}
+
+function updateItem(table,data){
+    return new Promise ((resolve,reject)=>{
+        connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, data.id], (error,result)=>{
+            return error ? reject(error) : resolve (result);
+        })
+    })
 }
 
 function add(table,data){
-
+    if(data && data.id == 0){
+        return insertItem(table,data);
+    }else{
+        return updateItem(table,data);
+    }
 }
 
-function remove(table,id){
-
+function remove(table,data){
+    return new Promise ((resolve,reject)=>{
+        connection.query(`DELETE FROM ${table} WHERE id = ?`, data.id, (error,result)=>{
+            return error ? reject(error) : resolve (result);
+        })
+    })
 }
 
 module.exports={
