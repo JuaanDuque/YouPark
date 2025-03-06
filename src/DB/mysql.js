@@ -52,29 +52,21 @@ function selectOne(table,id){
     })
 }
 
-function insertItem(table,data){
-    return new Promise ((resolve,reject)=>{
-        connection.query(`INSERT INTO ${table} SET ?`, data, (error,result)=>{
-            return error ? reject(error) : resolve (result);
-        })
-    })
+function add(table, data) {
+    return new Promise((resolve, reject) => {
+        const updateData = Object.keys(data)
+            .map(key => `${key} = VALUES(${key})`)
+            .join(", ");
+
+        const sql = `INSERT INTO ?? SET ? ON DUPLICATE KEY UPDATE ${updateData}`;
+        const values = [table, data];
+
+        connection.query(sql, values, (error, result) => {
+            return error ? reject(error) : resolve(result);
+        });
+    });
 }
 
-function updateItem(table,data){
-    return new Promise ((resolve,reject)=>{
-        connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, data.id], (error,result)=>{
-            return error ? reject(error) : resolve (result);
-        })
-    })
-}
-
-function add(table,data){
-    if(data && data.id == 0){
-        return insertItem(table,data);
-    }else{
-        return updateItem(table,data);
-    }
-}
 
 function remove(table,data){
     return new Promise ((resolve,reject)=>{
@@ -84,9 +76,19 @@ function remove(table,data){
     })
 }
 
+function query(table,consult){
+    console.log(consult,'consult');
+    return new Promise ((resolve,reject)=>{
+        connection.query(`SELECT * FROM ${table} WHERE ?`, consult, (error,result)=>{
+            return error ? reject(error) : resolve (result);
+        })
+    })
+}
+
 module.exports={
     selectAll,
     selectOne,
     add,
-    remove
+    remove,
+    query
 }

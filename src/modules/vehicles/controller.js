@@ -1,26 +1,33 @@
-const db = require('../../DB/mysql');
-
 const TABLA = 'vehicles'
 
-function selectAll(){
-    return db.selectAll(TABLA);
-}
+module.exports = function(dbinyectada){
 
-function selectOne(id){
-    return db.selectOne(TABLA, id);
-}
+    let db = dbinyectada;
 
-function add(body){
-    return db.remove(TABLA, body);
-}
+    if(!db){
+        db = require('../../DB/mysql')
+    }
 
-function remove(body){
-    return db.add(TABLA, body);
-}
+    function selectAll(){
+        return db.selectAll(TABLA);
+    }
+    
+    function selectOne(id){
+        return db.selectOne(TABLA, id);
+    }
+    
+    function add(body){
+        return db.add(TABLA, body);
+    }
+    
+    function remove(body){
+        return db.remove(TABLA, body);
+    }
 
-module.exports = {
-    selectAll,
-    selectOne,
-    add,
-    remove
+    return{
+        selectAll,
+        selectOne,
+        add,
+        remove
+    }
 }
