@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
 const config = require('./config');
@@ -12,6 +13,9 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+// Permitir solicitudes desde el frontend
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 //configuracion
 app.set('port',config.app.port);
