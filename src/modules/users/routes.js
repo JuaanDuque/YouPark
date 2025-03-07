@@ -1,12 +1,13 @@
 const express = require('express');
+const security = require('./security');
 const response = require('../../network/response');
 const router = express.Router();
 const controller = require('./index');
 
 router.get('/', allItems);
 router.get('/:id',oneItem);
-router.put('/', deleteItem);
-router.post('/',addItem);
+router.put('/', security(),deleteItem);
+router.post('/',security(),addItem);
 
 async function allItems (req,res){
     try{

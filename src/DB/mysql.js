@@ -76,10 +76,18 @@ function remove(table,data){
     })
 }
 
-function query(table,consult){
-    console.log(consult,'consult');
+function selectOneEmail(email){
     return new Promise ((resolve,reject)=>{
-        connection.query(`SELECT * FROM ${table} WHERE ?`, consult, (error,result)=>{
+        connection.query(`SELECT * FROM users WHERE email="${email}"`,(error,result)=>{
+            return error ? reject(error) : resolve (result);
+        })
+    })
+}
+
+async function query(table,consult){
+    const data = await selectOneEmail(consult.email);
+    return new Promise ((resolve,reject)=>{
+        connection.query(`SELECT * FROM ${table} WHERE id = ?`, [data[0].id], (error,result)=>{
             return error ? reject(error) : resolve (result);
         })
     })

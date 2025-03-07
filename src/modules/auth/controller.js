@@ -1,6 +1,7 @@
 const TABLA = 'auth'
 const bcrypt = require('bcrypt');
 const authentication = require('../../authentication');
+const error = require('../../middleware/errors');
 module.exports = function(dbinyectada){
 
     let db = dbinyectada;
@@ -9,14 +10,15 @@ module.exports = function(dbinyectada){
         db = require('../../DB/mysql')
     }
 
-    async function login(id,password){
-        const data = await db.query(TABLA,{id: id});
-        return bcrypt.compare(password,data[0].password).then(result => {
+    async function login(data){
+        const response = await db.query(TABLA,data);
+        console.log(response,data,'>>>>')
+        return bcrypt.compare(data.password,response[0].password).then(result => {
             if(result === true){
                 //generar token
                 return authentication.assignToken({ ...data});
             }else{
-                throw new Error('Información invalida.');
+                throw error('Información invalida.',400);
             }
         })
     }
