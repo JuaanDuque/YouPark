@@ -1,0 +1,73 @@
+.container-container-bg {
+    background-image: url("/fondo.svg");
+    background-size: cover;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100dvh;
+  }
+  
+  @media only screen and (max-width: 425px) {
+    .container-container-bg {
+      background-image: url("/fondocel.svg") !important;
+      background-position: center;
+    }
+  }
+
+  .w-logo {
+    width: 50px;
+  }
+
+  .w-image-home {
+    width: 35px;
+    height: auto;
+  }
+
+
+  .custom-rounded-button {
+    background-color: #0095d6; /* Color del botón */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    
+    /* Bordes personalizados */
+    border-top-left-radius: 10px;  /* Redondeo sutil */
+    border-bottom-left-radius: 40px; /* Redondeo pronunciado */
+    border-top-right-radius: 50px;  /* Circular en la parte superior derecha */
+    border-bottom-right-radius: 50px;  /* Circular en la parte inferior derecha */
+
+     /* Sombra con desplazamiento hacia abajo */
+     box-shadow: 8px 12px 0px #3cb7ea; /* Color más claro de la sombra */
+     position: relative;
+  }
+
+  .custom-rounded-button:active {
+    box-shadow: 6px 9px 0px #3cb7ea;
+    transform: translateY(1px);
+  }
+
+  @font-face {
+    font-family: "BerlinSans";
+    src: url("/fonts/berlinsansfb.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  body {
+    font-family: "BerlinSans", sans-serif !important;
+  }
+  
+  .no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.dropdown-item-out:active {
+  background-color: red !important;
+}
+
+  
+  
+  

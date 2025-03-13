@@ -16,3 +16,18 @@ export const loginUser = async (email, password) => {
     throw error.response?.data || { message: "Error de conexión" };
   }
 };
+
+export const getUserEmail = async (email) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/users/email/${email}`, {
+      email,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error en el login:",
+      error.response?.data || "Error desconocido"
+    );
+    throw error.response?.data || { message: "Error de conexión" };
+  }
+};

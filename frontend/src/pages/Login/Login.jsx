@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../services/api";
+import { loginUser, getUserEmail } from "../../services/api";
 import AlertMessage from "../../components/AlertMessage";
 
 const Login = () => {
@@ -22,7 +22,9 @@ const Login = () => {
 
     try {
       const data = await loginUser(formData.email, formData.password);
+      const user = await getUserEmail(formData.email);
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", user.data);
       setAlert({ message: "Inicio de sesión exitoso", type: "success" });
 
       navigate("/home");
@@ -35,22 +37,34 @@ const Login = () => {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow" style={{ width: "400px" }}>
-        <h2 className="text-center mb-3">Bienvenido</h2>
-        <p className="text-center text-muted">Inicia sesión para continuar</p>
-
+    <div className="container-container-bg d-flex justify-content-center align-items-center no-scroll">
+      <div className="p-4" style={{ width: "400px" }}>
+        <img
+          src="/public/logo.png"
+          className="img-fluid d-block mx-auto w-logo"
+          alt="Logo"
+        ></img>
+        <p className="text-center" style={{ color: "#0095d6" }}>
+          <strong>Bienvenido</strong>
+        </p>
+        <p className="text-center" style={{ color: "gray" }}>
+          <small>¡Inicia sesión y aparca sin preocupaciones!</small>
+        </p>
+        <h3 className="text-center mb-3" style={{ color: "#3cb7ea" }}>
+          <strong>INICIAR SESIÓN</strong>
+        </h3>
         {/* Alerta reutilizable */}
         <AlertMessage message={alert.message} type={alert.type} />
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Correo Electrónico</label>
+            <label className="form-label">Email</label>
             <input
               type="email"
-              className="form-control"
+              className="form-control rounded-pill border border-3 mt-2"
               name="email"
               value={formData.email}
+              placeholder="Ingresa tu email"
               onChange={handleChange}
               required
             />
@@ -60,18 +74,25 @@ const Login = () => {
             <label className="form-label">Contraseña</label>
             <input
               type="password"
-              className="form-control"
+              className="form-control rounded-pill border border-3 mt-2"
               name="password"
               value={formData.password}
+              placeholder="Ingresa tu contraseña"
               onChange={handleChange}
               required
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">
+          <button
+            type="submit"
+            className="w-100 custom-rounded-button mt-3 mb-4"
+          >
             Ingresar
           </button>
         </form>
+        <div className="text-center mt-2">
+          <p className="text-muted">¿Olvidaste tu contraseña?</p>
+        </div>
       </div>
     </div>
   );

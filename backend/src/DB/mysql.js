@@ -81,10 +81,10 @@ function remove(table, data) {
   });
 }
 
-function selectOneEmail(email) {
+function selectOneEmail(table, email) {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM users WHERE email="${email}"`,
+      `SELECT * FROM ${table} WHERE email="${email}"`,
       (error, result) => {
         return error ? reject(error) : resolve(result);
       }
@@ -92,15 +92,10 @@ function selectOneEmail(email) {
   });
 }
 
-async function query(table, consult) {
-  const data = await selectOneEmail(consult.email);
-  if (data.length == 0) {
-    throw new Error();
-  }
+async function query(table, email) {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM ${table} WHERE id = ?`,
-      [data[0].id],
+      `SELECT * FROM ${table} INNER JOIN users ON users.id = ${table}.id WHERE users.email = "${email.email}"`,
       (error, result) => {
         return error ? reject(error) : resolve(result);
       }
@@ -113,5 +108,6 @@ module.exports = {
   selectOne,
   add,
   remove,
+  selectOneEmail,
   query,
 };

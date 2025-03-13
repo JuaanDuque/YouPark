@@ -1,13 +1,13 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login/Login";
-import Home from "./pages/Home/Home";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/home" element= {<Home/>} />
+      <Route path="/home" element={<Navbar />} />
     </Routes>
   );
 };
