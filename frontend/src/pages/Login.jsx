@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, getUserEmail } from "../../services/api";
-import AlertMessage from "../../components/AlertMessage";
+import { loginUser, getUserEmail } from "../services/api";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,10 +22,10 @@ const Login = () => {
     try {
       const data = await loginUser(formData.email, formData.password);
       const user = await getUserEmail(formData.email);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", user.data);
+      localStorage.setItem("token", data.body);
+      localStorage.setItem("user", JSON.stringify(user.body[0]));
       setAlert({ message: "Inicio de sesión exitoso", type: "success" });
-
+      setIsAuthenticated(true);
       navigate("/home");
     } catch (err) {
       setAlert({
@@ -41,20 +40,18 @@ const Login = () => {
       <div className="p-4" style={{ width: "400px" }}>
         <img
           src="/public/logo.png"
-          className="img-fluid d-block mx-auto w-logo"
+          className="d-block mx-auto w-logo mb-4"
           alt="Logo"
         ></img>
-        <p className="text-center" style={{ color: "#0095d6" }}>
+        <h3 className="text-center" style={{ color: "#0095d6" }}>
           <strong>Bienvenido</strong>
-        </p>
+        </h3>
         <p className="text-center" style={{ color: "gray" }}>
           <small>¡Inicia sesión y aparca sin preocupaciones!</small>
         </p>
-        <h3 className="text-center mb-3" style={{ color: "#3cb7ea" }}>
+        <h2 className="text-center mb-3" style={{ color: "#0095d6" }}>
           <strong>INICIAR SESIÓN</strong>
-        </h3>
-        {/* Alerta reutilizable */}
-        <AlertMessage message={alert.message} type={alert.type} />
+        </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">

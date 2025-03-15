@@ -15,7 +15,8 @@
   }
 
   .w-logo {
-    width: 50px;
+    width: 80px;
+    height: 150px;
   }
 
   .w-image-home {
@@ -66,6 +67,10 @@
 
 .dropdown-item-out:active {
   background-color: red !important;
+}
+
+.content {
+  margin-top: 120px; /* Ajusta este valor según la altura del Navbar */
 }
 
   

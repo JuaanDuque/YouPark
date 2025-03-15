@@ -1,11 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const Navbar = () => {
+const Navbar = (setIsAuthenticated) => {
+  const navigate = useNavigate();
+  const data = JSON.parse(localStorage.getItem("user"));
+  const role = data.role_id;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    navigate("/login");
+  };
   return (
     <nav
-      className="navbar navbar-expand-lg border-bottom"
+      className="navbar navbar-expand-lg border-bottom fixed-top"
       style={{ backgroundColor: "#e3f2fd" }}
     >
       <div className="container-fluid">
@@ -40,7 +49,38 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
-          <ul className="navbar-nav ms-auto">
+          {/* Mostrar el menú solo si el rol es 1 (Administrador) */}
+          {role === 2 && (
+            <ul className="navbar-nav">
+              <li className="nav-item dropdown ">
+                <Link
+                  className="nav-link dropdown-toggle active"
+                  to="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Usuarios
+                </Link>
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  style={{ backgroundColor: "#e3f2fd" }}
+                >
+                  <li>
+                    <Link className="dropdown-item" to="/search-users">
+                      Buscar usuarios
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/create-user">
+                      Crear usuarios
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          )}
+          <ul className="navbar-nav">
             <li className="nav-item dropdown ">
               <Link
                 className="nav-link dropdown-toggle active"
@@ -61,7 +101,10 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item dropdown-item-out" to="/login">
+                  <Link
+                    className="dropdown-item dropdown-item-out"
+                    onClick={handleLogout}
+                  >
                     Cerrar sesión
                   </Link>
                 </li>
