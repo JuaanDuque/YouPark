@@ -59,7 +59,6 @@ function add(table, data) {
     const updateData = Object.keys(data)
       .map((key) => `${key} = VALUES(${key})`)
       .join(", ");
-
     const sql = `INSERT INTO ?? SET ? ON DUPLICATE KEY UPDATE ${updateData}`;
     const values = [table, data];
 
@@ -92,7 +91,7 @@ function selectOneEmail(table, email) {
   });
 }
 
-async function query(table, email) {
+function query(table, email) {
   return new Promise((resolve, reject) => {
     connection.query(
       `SELECT * FROM ${table} INNER JOIN users ON users.id = ${table}.id WHERE users.email = "${email.email}"`,

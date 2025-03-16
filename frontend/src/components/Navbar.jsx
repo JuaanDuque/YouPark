@@ -50,7 +50,7 @@ const Navbar = (setIsAuthenticated) => {
             </li>
           </ul>
           {/* Mostrar el menú solo si el rol es 1 (Administrador) */}
-          {role === 2 && (
+          {role === 1 && (
             <ul className="navbar-nav">
               <li className="nav-item dropdown ">
                 <Link

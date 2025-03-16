@@ -11,7 +11,6 @@ router.put("/", security(), deleteItem);
 router.post("/", security(), addItem);
 
 async function allItems(req, res) {
-  console.log("tilin en reouter1");
   try {
     const items = await controller.selectAll();
     response.success(req, res, items, 200);
@@ -40,8 +39,8 @@ async function oneItemEmail(req, res, next) {
 
 async function addItem(req, res, next) {
   try {
-    await controller.add(req.body);
-    if (req.body.id == 0) {
+    await controller.add(req.body.data.newUser);
+    if (req.body.data.newUser.id == 0) {
       message = "item guardado con exito";
     } else {
       message = "item actualizado con exito";

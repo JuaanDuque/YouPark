@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, getUserEmail } from "../services/api";
+import { loginUser } from "../services/login/api";
+import { getUserEmail } from "../services/users/api";
 
 const Login = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -8,7 +9,6 @@ const Login = ({ setIsAuthenticated }) => {
     password: "",
   });
 
-  const [alert, setAlert] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,21 +17,16 @@ const Login = ({ setIsAuthenticated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setAlert({ message: "", type: "" });
 
     try {
       const data = await loginUser(formData.email, formData.password);
       const user = await getUserEmail(formData.email);
       localStorage.setItem("token", data.body);
       localStorage.setItem("user", JSON.stringify(user.body[0]));
-      setAlert({ message: "Inicio de sesión exitoso", type: "success" });
       setIsAuthenticated(true);
       navigate("/home");
     } catch (err) {
-      setAlert({
-        message: err.message || "Error al iniciar sesión",
-        type: "danger",
-      });
+      alert("Error al iniciar sesión");
     }
   };
 

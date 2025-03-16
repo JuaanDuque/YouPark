@@ -1,5 +1,6 @@
 const TABLA = "users";
 const auth = require("../auth/index");
+const vehicle = require("../vehicles/index");
 module.exports = function (dbinyectada) {
   let db = dbinyectada;
 
@@ -20,6 +21,20 @@ module.exports = function (dbinyectada) {
   }
 
   async function add(body) {
+    if (body.vehicle1_id) {
+      const vehicles = {
+        plate: body.vehicle1_id,
+        vehicle_type_id: body.vehicle1Type,
+      };
+      await vehicle.add(vehicles);
+    }
+    if (body.vehicle2_id) {
+      const vehicles = {
+        plate: body.vehicle2_id,
+        vehicle_type_id: body.vehicle2Type,
+      };
+      await vehicle.add(vehicles);
+    }
     const user = {
       id: body.id,
       full_name: body.full_name,
@@ -42,11 +57,11 @@ module.exports = function (dbinyectada) {
       insertId = body.id;
     }
     let response2 = "";
-    if (body.full_name || body.password) {
+    if (body.full_name || body.identification_number) {
       response2 = await auth.add({
         id: insertId,
         user: body.full_name,
-        password: body.password,
+        password: body.identification_number,
       });
     }
 

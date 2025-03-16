@@ -1,60 +1,97 @@
 import React, { useState } from "react";
+import { createUser } from "../services/users/api";
 
 const CreateUser = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
-    numberId: "",
+    full_name: "",
+    identification_number: "",
     phone: "",
-    apartment: "",
-    vehicle1: "",
-    vehicle2: "",
+    email: "",
+    tower: "",
+    apartment_number: "",
+    vehicle1_id: null,
+    vehicle2_id: null,
     vehicle1Type: 0,
     vehicle2Type: 0,
     role_id: 2,
+    active: 1,
   });
   const [errors, setErrors] = useState({});
   const handleChange = (e) => {
-    console.log("e.target.name", e.target.name);
-    console.log("e.target.value", e.target.value);
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]:
+        (name === "vehicle1" || name === "vehicle2") && value === ""
+          ? null
+          : value,
+    }));
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let newErrors = {};
+  let newErrors = {};
+  const validateVehicles = () => {
+    const validateVehicle = (vehicle, vehicleType, vehicleName) => {
+      if (vehicle != null && (!vehicleType || vehicleType === "0")) {
+        newErrors[`${vehicleName}Type`] =
+          "Debes ingresar el tipo del vehículo.";
+      }
+      if ((vehicleType === "1" || vehicleType === "2") && !vehicle.trim()) {
+        newErrors[vehicleName] = "Debes ingresar la placa del vehículo.";
+      }
+    };
 
-    // Validación: Si seleccionó "Carro" (1) o "Moto" (2), debe ingresar una placa
-    if (
-      (formData.vehicle1Type === "1" || formData.vehicle1Type === "2") &&
-      !formData.vehicle1.trim()
-    ) {
-      newErrors.vehicle1 = "Debes ingresar la placa del vehículo.";
-    }
-    if (
-      (formData.vehicle2Type === "1" || formData.vehicle2Type === "2") &&
-      !formData.vehicle2.trim()
-    ) {
-      newErrors.vehicle2 = "Debes ingresar la placa del vehículo.";
+    validateVehicle(formData.vehicle1_id, formData.vehicle1Type, "vehicle1");
+    validateVehicle(formData.vehicle2_id, formData.vehicle2Type, "vehicle2");
+
+    if (formData.vehicle1Type === "1" && formData.vehicle2Type === "1") {
+      newErrors.vehicle2Type = "Solo puedes registrar un carro.";
     }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return;
+      alert(Object.values(newErrors).join("\n"));
+      return false;
     }
 
-    console.log("Formulario enviado con éxito:", formData);
-    newErrors = { vehicle1: null, vehicle2: null };
-    setFormData({
-      fullName: "",
-      numberId: "",
-      phone: "",
-      apartment: "",
-      vehicle1: "",
-      vehicle2: "",
-      vehicle1Type: 0,
-      vehicle2Type: 0,
-      role_id: 2,
-    });
-    setErrors(newErrors);
+    return true;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateVehicles()) return;
+
+    const token = localStorage.getItem("token");
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const data = {
+      token: token,
+      ...storedUser,
+      newUser: { ...formData, id: 0 },
+    };
+    try {
+      await createUser(data);
+      alert("Usuario creado satisfactoriamente");
+      newErrors = {
+        vehicle1_id: null,
+        vehicle2_id: null,
+        vehicle1Type: null,
+        vehicle2Type: null,
+      };
+      setFormData({
+        full_name: "",
+        identification_number: "",
+        phone: "",
+        email: "",
+        tower: "",
+        apartment_number: "",
+        vehicle1_id: "",
+        vehicle2_id: "",
+        vehicle1Type: 0,
+        vehicle2Type: 0,
+        role_id: 2,
+        active: 1,
+      });
+      setErrors(newErrors);
+    } catch (err) {
+      alert("Error al crear el usuario");
+    }
   };
   return (
     <div
@@ -69,9 +106,9 @@ const CreateUser = () => {
               <label className="form-label">Nombre Completo</label>
               <input
                 className="form-control rounded-4 border"
-                name="fullName"
-                id="fullName"
-                value={formData.fullName}
+                name="full_name"
+                id="full_name"
+                value={formData.full_name}
                 onChange={handleChange}
                 required
               />
@@ -81,9 +118,9 @@ const CreateUser = () => {
               <label className="form-label">Número de Identificación</label>
               <input
                 className="form-control rounded-4 border"
-                name="numberId"
-                id="numberId"
-                value={formData.numberId}
+                name="identification_number"
+                id="identification_number"
+                value={formData.identification_number}
                 onChange={handleChange}
                 required
               />
@@ -100,6 +137,18 @@ const CreateUser = () => {
                 required
               />
             </div>
+            <div className="mb-3">
+              <label className="form-label">Correo electrónico</label>
+              <input
+                className="form-control rounded-4 border"
+                type="email"
+                name="email"
+                id="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
 
           {/* Segunda Columna */}
@@ -109,25 +158,27 @@ const CreateUser = () => {
                 <label className="form-label">Vehículo 1</label>
                 <input
                   className={`form-control rounded-4 border ${
-                    errors.vehicle1 ? "border-danger" : ""
+                    errors.vehicle1_id ? "border-danger" : ""
                   }`}
-                  name="vehicle1"
-                  id="vehicle1"
+                  name="vehicle1_id"
+                  id="vehicle1_id"
                   minLength={5}
                   maxLength={6}
-                  value={formData.vehicle1}
+                  value={formData.vehicle1_id ?? ""}
                   onChange={handleChange}
                 />
               </div>
               <div>
                 <label className="form-label">Tipo</label>
                 <select
-                  className="form-select rounded-4 border"
+                  className={`form-select rounded-4 border ${
+                    errors.vehicle1Type ? "border-danger" : ""
+                  }`}
                   name="vehicle1Type"
                   value={formData.vehicle1Type}
                   onChange={handleChange}
                 >
-                  <option value="">Seleccionar</option>
+                  <option value="0">Seleccionar</option>
                   <option value="1">Carro</option>
                   <option value="2">Moto</option>
                 </select>
@@ -139,25 +190,27 @@ const CreateUser = () => {
                 <label className="form-label">Vehículo 2</label>
                 <input
                   className={`form-control rounded-4 border ${
-                    errors.vehicle2 ? "border-danger" : ""
+                    errors.vehicle2_id ? "border-danger" : ""
                   }`}
-                  name="vehicle2"
-                  id="vehicle2"
+                  name="vehicle2_id"
+                  id="vehicle2_id"
                   minLength={5}
                   maxLength={6}
-                  value={formData.vehicle2}
+                  value={formData.vehicle2_id ?? ""}
                   onChange={handleChange}
                 />
               </div>
               <div>
                 <label className="form-label">Tipo</label>
                 <select
-                  className="form-select rounded-4 border"
+                  className={`form-select rounded-4 border ${
+                    errors.vehicle2Type ? "border-danger" : ""
+                  }`}
                   name="vehicle2Type"
                   value={formData.vehicle2Type}
                   onChange={handleChange}
                 >
-                  <option value="">Seleccionar</option>
+                  <option value="0">Seleccionar</option>
                   <option value="1">Carro</option>
                   <option value="2">Moto</option>
                 </select>
@@ -168,9 +221,20 @@ const CreateUser = () => {
               <label className="form-label">Apartamento</label>
               <input
                 className="form-control rounded-4 border"
-                name="apartment"
-                id="apartment"
-                value={formData.apartment}
+                name="apartment_number"
+                id="apartment_number"
+                value={formData.apartment_number}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Torre</label>
+              <input
+                className="form-control rounded-4 border"
+                name="tower"
+                id="tower"
+                value={formData.tower}
                 onChange={handleChange}
                 required
               />
