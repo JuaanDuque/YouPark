@@ -20,6 +20,10 @@ module.exports = function (dbinyectada) {
     return db.selectOneEmail(TABLA, email);
   }
 
+  function getUsers(data, params = []) {
+    return db.query(data, params);
+  }
+
   async function add(body) {
     if (body.vehicle1_id) {
       const vehicles = {
@@ -76,6 +80,7 @@ module.exports = function (dbinyectada) {
     selectAll,
     selectOne,
     selectOneEmail,
+    getUsers,
     add,
     remove,
   };

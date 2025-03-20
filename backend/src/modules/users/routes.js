@@ -6,7 +6,7 @@ const controller = require("./index");
 
 router.get("/", allItems);
 router.get("/email/:email", oneItemEmail);
-router.get("/:id", oneItem);
+router.get("/getUsers", getUsers);
 router.put("/", security(), deleteItem);
 router.post("/", security(), addItem);
 
@@ -19,9 +19,41 @@ async function allItems(req, res) {
   }
 }
 
-async function oneItem(req, res, next) {
+async function getUsers(req, res, next) {
   try {
-    const items = await controller.selectOne(req.params.id);
+    const { role_id } = req.query;
+
+    if (!role_id) {
+      return response.error(req, res, "role_id es obligatorio", 400);
+    }
+
+    // Construir la consulta SQL dinámica
+    const query = `
+      SELECT 
+        u.id, 
+        u.full_name, 
+        u.identification_number, 
+        u.email, 
+        u.phone, 
+        u.apartment_number, 
+        u.tower, 
+        u.active, 
+        u.vehicle1_id, 
+        u.vehicle2_id, 
+        u.role_id, 
+        v1.vehicle_type_id AS vehicle1Type, 
+        v2.vehicle_type_id AS vehicle2Type
+      FROM 
+        users u
+      LEFT JOIN 
+        vehicles v1 ON u.vehicle1_id = v1.plate
+      LEFT JOIN 
+        vehicles v2 ON u.vehicle2_id = v2.plate
+      WHERE 
+        u.role_id = ?;
+    `;
+
+    const items = await controller.getUsers(query, [role_id]);
     response.success(req, res, items, 200);
   } catch (err) {
     next(err);
