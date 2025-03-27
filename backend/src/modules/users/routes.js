@@ -6,7 +6,7 @@ const controller = require("./index");
 
 router.get("/", allItems);
 router.get("/email/:email", oneItemEmail);
-router.get("/:id", oneItem);
+router.get("/getUsers", getUsers);
 router.put("/", security(), deleteItem);
 router.post("/", security(), addItem);
 
@@ -19,9 +19,14 @@ async function allItems(req, res) {
   }
 }
 
-async function oneItem(req, res, next) {
+async function getUsers(req, res, next) {
   try {
-    const items = await controller.selectOne(req.params.id);
+    const { role_id } = req.query;
+
+    if (!role_id) {
+      return response.error(req, res, "role_id es obligatorio", 400);
+    }
+    const items = await controller.getUsers([role_id]);
     response.success(req, res, items, 200);
   } catch (err) {
     next(err);

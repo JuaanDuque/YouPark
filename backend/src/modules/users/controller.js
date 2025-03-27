@@ -20,6 +20,34 @@ module.exports = function (dbinyectada) {
     return db.selectOneEmail(TABLA, email);
   }
 
+  function getUsers(params = []) {
+    const data = `
+          SELECT 
+            u.id, 
+            u.full_name, 
+            u.identification_number, 
+            u.email, 
+            u.phone, 
+            u.apartment_number, 
+            u.tower, 
+            u.active, 
+            u.vehicle1_id, 
+            u.vehicle2_id, 
+            u.role_id, 
+            v1.vehicle_type_id AS vehicle1Type, 
+            v2.vehicle_type_id AS vehicle2Type
+          FROM 
+            users u
+          LEFT JOIN 
+            vehicles v1 ON u.vehicle1_id = v1.plate
+          LEFT JOIN 
+            vehicles v2 ON u.vehicle2_id = v2.plate
+          WHERE 
+            u.role_id = ?;
+        `;
+    return db.query(data, params);
+  }
+
   async function add(body) {
     if (body.vehicle1_id) {
       const vehicles = {
@@ -76,6 +104,7 @@ module.exports = function (dbinyectada) {
     selectAll,
     selectOne,
     selectOneEmail,
+    getUsers,
     add,
     remove,
   };

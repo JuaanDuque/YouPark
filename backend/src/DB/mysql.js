@@ -54,6 +54,21 @@ function selectOne(table, id) {
   });
 }
 
+function selectObject(tabla, condiciones) {
+  return new Promise((resolve, reject) => {
+    const whereClause = Object.keys(condiciones)
+      .map((key) => `${key} = ?`)
+      .join(" AND ");
+
+    const consulta = `SELECT * FROM ?? WHERE ${whereClause}`;
+    const valores = Object.values(condiciones);
+
+    connection.query(consulta, [tabla, ...valores], (error, result) => {
+      return error ? reject(error) : resolve(result);
+    });
+  });
+}
+
 function add(table, data) {
   return new Promise((resolve, reject) => {
     const updateData = Object.keys(data)
@@ -91,7 +106,7 @@ function selectOneEmail(table, email) {
   });
 }
 
-function query(table, email) {
+function login(table, email) {
   return new Promise((resolve, reject) => {
     connection.query(
       `SELECT * FROM ${table} INNER JOIN users ON users.id = ${table}.id WHERE users.email = "${email.email}"`,
@@ -102,11 +117,21 @@ function query(table, email) {
   });
 }
 
+function query(query, params = []) {
+  return new Promise((resolve, reject) => {
+    connection.query(query, params, (error, result) => {
+      return error ? reject(error) : resolve(result);
+    });
+  });
+}
+
 module.exports = {
   selectAll,
   selectOne,
   add,
+  selectObject,
   remove,
   selectOneEmail,
+  login,
   query,
 };

@@ -58,12 +58,15 @@
 
   body {
     font-family: "BerlinSans", sans-serif !important;
+    overflow: hidden;
+  }
+
+  @media only screen and (max-width: 784px) {
+    body {
+      overflow: auto;
+    }
   }
   
-  .no-scroll {
-  overflow: hidden;
-  height: 100vh;
-}
 
 .dropdown-item-out:active {
   background-color: red !important;
@@ -71,6 +74,63 @@
 
 .content {
   margin-top: 120px; /* Ajusta este valor según la altura del Navbar */
+}
+
+.spinner-container {
+  position: relative;
+  z-index: 2; /* Asegura que el spinner esté encima del overlay */
+}
+
+/* Asegura que el texto y los spinners estén por encima del overlay */
+.text-center {
+  z-index: 2;
+}
+
+.spinner-logo {
+  width: 100px;
+  z-index: 2;
+}
+
+.fadeOutRight {
+  animation: infinite linear;
+  animation-name: fadeOutRight;
+  animation-duration: 3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+@keyframes fadeOutRight {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(-600%, 0, 0);
+    transform: translate3d(-600%, 0, 0);
+  }
+  20% {
+    opacity: 1;
+    -webkit-transform: translate3d(25px, 0, 0);
+    transform: translate3d(25px, 0, 0);
+  }
+  45% {
+    -webkit-transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+  60% {
+    -webkit-transform: translate3d(5px, 0, 0);
+    transform: translate3d(5px, 0, 0);
+  }
+  75% {
+    -webkit-transform: none;
+    transform: none;
+  }
+  80% {
+    opacity: 1;
+    -webkit-transform: translate3d(-20px, 0, 0);
+    transform: translate3d(-20px, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translate3d(600%, 0, 0);
+    transform: translate3d(600%, 0, 0);
+  }
 }
 
   

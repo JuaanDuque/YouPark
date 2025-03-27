@@ -67,7 +67,7 @@ const Navbar = (setIsAuthenticated) => {
                   style={{ backgroundColor: "#e3f2fd" }}
                 >
                   <li>
-                    <Link className="dropdown-item" to="/search-users">
+                    <Link className="dropdown-item" to="/search-user">
                       Buscar usuarios
                     </Link>
                   </li>

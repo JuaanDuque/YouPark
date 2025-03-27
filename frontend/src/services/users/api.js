@@ -21,3 +21,15 @@ export const createUser = async (data) => {
     throw error.response?.data || { message: "Error de conexión" };
   }
 };
+
+export const getUsersRole = async () => {
+  try {
+    // Enviar solo el parámetro role_id como query parameter
+    const response = await axios.get(`${API_URL}/api/users/getUsers`, {
+      params: { role_id: 2 },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Error de conexión" };
+  }
+};

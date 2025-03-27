@@ -10,7 +10,7 @@ module.exports = function (dbinyectada) {
   }
 
   async function login(data) {
-    const response = await db.query(TABLA, data);
+    const response = await db.login(TABLA, data);
     return bcrypt
       .compare(data.password, response[0].password)
       .then((result) => {
