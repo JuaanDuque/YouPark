@@ -83,22 +83,35 @@ function add(table, data) {
   });
 }
 
+function update(table, data) {
+  return new Promise((resolve, reject) => {
+    // Se extrae el id y se remueve del objeto para no actualizar la clave primaria
+    const id = data.id;
+    if (!id) {
+      return reject(
+        new Error("Se requiere el campo 'id' para la actualización.")
+      );
+    }
+    const fields = { ...data };
+    delete fields.id;
+
+    const sql = "UPDATE ?? SET ? WHERE id = ?";
+    const values = [table, fields, id];
+
+    connection.query(sql, values, (error, result) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(result);
+    });
+  });
+}
+
 function remove(table, data) {
   return new Promise((resolve, reject) => {
     connection.query(
       `DELETE FROM ${table} WHERE id = ?`,
       data.id,
-      (error, result) => {
-        return error ? reject(error) : resolve(result);
-      }
-    );
-  });
-}
-
-function selectOneEmail(table, email) {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      `SELECT * FROM ${table} WHERE email="${email}"`,
       (error, result) => {
         return error ? reject(error) : resolve(result);
       }
@@ -131,7 +144,7 @@ module.exports = {
   add,
   selectObject,
   remove,
-  selectOneEmail,
   login,
   query,
+  update,
 };
