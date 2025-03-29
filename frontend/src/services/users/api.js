@@ -24,7 +24,6 @@ export const createUser = async (data) => {
 
 export const getUsersRole = async () => {
   try {
-    // Enviar solo el parámetro role_id como query parameter
     const response = await axios.get(`${API_URL}/api/users/getUsers`, {
       params: { role_id: 2 },
     });

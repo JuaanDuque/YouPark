@@ -33,7 +33,8 @@ const UserSearch = () => {
         user.full_name.toLowerCase().includes(query) || // Filtra por nombre
         (user.vehicle1_id && user.vehicle1_id.toLowerCase().includes(query)) || // Filtra por placa vehículo1
         (user.vehicle2_id && user.vehicle2_id.toLowerCase().includes(query)) || // Filtra por placa vehículo2
-        user.apartment_number.toLowerCase().includes(query) // Filtra por apartamento
+        user.apartment_number.toLowerCase().includes(query) || // Filtra por apartamento
+        user.id.toString().includes(query)
       );
     });
 

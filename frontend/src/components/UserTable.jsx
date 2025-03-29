@@ -121,6 +121,7 @@ const UserTable = ({ users, currentPage, pageSize, onPageChange }) => {
       <table className="table table-striped table-responsive">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Nombre</th>
             <th>Teléfono</th>
             <th>Placa 1</th>
@@ -134,6 +135,7 @@ const UserTable = ({ users, currentPage, pageSize, onPageChange }) => {
           {currentUsers.length > 0 ? (
             currentUsers.map((user) => (
               <tr key={user.identification_number}>
+                <td>{user.id}</td>
                 <td>{user.full_name}</td>
                 <td>{user.phone}</td>
                 <td>{user.vehicle1_id}</td>
@@ -160,7 +162,7 @@ const UserTable = ({ users, currentPage, pageSize, onPageChange }) => {
       </table>
 
       {/* Paginación */}
-      <div className="fixed-bottom d-flex justify-content-center bg-white py-3">
+      <div className="fixed-bottom d-flex justify-content-center py-3 mb-4">
         <button
           className="btn btn-secondary"
           onClick={() => onPageChange(currentPage - 1)}
