@@ -4,12 +4,23 @@ const router = express.Router();
 const controller = require("./index");
 
 router.post("/", addReservation);
+router.get("/:id", selectReservation);
 router.put("/:id", updateReservation);
 
 async function updateReservation(req, res, next) {
   try {
     const result = await controller.update(req.body.data);
     res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function selectReservation(req, res, next) {
+  try {
+    console.log(req, "req<<<<<");
+    const items = await controller.selectReservation(req.params.id);
+    response.success(req, res, items, 200);
   } catch (err) {
     next(err);
   }

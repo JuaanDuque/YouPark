@@ -1,44 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import QRCodeModal from "../components/QRcodeModal";
 import ParkingslotModal from "./ParkingslotModal";
+import { getReservation } from "../services/reservations/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = (setIsAuthenticated) => {
-  const reservations = [
-    {
-      id: 1,
-      qr_code: "Reserva ID: 1, Celda: A1, Vehiculo: Carro", // Aquí se define la cadena qr_code
-      status: "Confirmada",
-      reservation_date: "2025-03-25 12:00:00",
-      slot_number: "A1",
-      vehicle_id: "Carro",
-    },
-    {
-      id: 2,
-      qr_code: "Reserva ID: 2, Celda: M2, Vehiculo: Moto", // Aquí se define la cadena qr_code
-      status: "Pendiente",
-      reservation_date: "2025-03-26 14:30:00",
-      slot_number: "M2",
-      vehicle_id: "Moto",
-    },
-    {
-      id: 3,
-      qr_code: "Reserva ID: 3, Celda: A3, Vehiculo: Carro", // Aquí se define la cadena qr_code
-      status: "Cancelada",
-      reservation_date: "2025-03-27 16:45:00",
-      slot_number: "A3",
-      vehicle_id: "Carro",
-    },
-  ];
+  // const reservations = [
+  //   {
+  //     id: 1,
+  //     qr_code: "Reserva ID: 1, Celda: A1, Vehiculo: Carro", // Aquí se define la cadena qr_code
+  //     status: "Confirmada",
+  //     reservation_date: "2025-03-25 12:00:00",
+  //     slot_number: "A1",
+  //     vehicle_id: "Carro",
+  //   },
+  //   {
+  //     id: 2,
+  //     qr_code: "Reserva ID: 2, Celda: M2, Vehiculo: Moto", // Aquí se define la cadena qr_code
+  //     status: "Pendiente",
+  //     reservation_date: "2025-03-26 14:30:00",
+  //     slot_number: "M2",
+  //     vehicle_id: "Moto",
+  //   },
+  //   {
+  //     id: 3,
+  //     qr_code: "Reserva ID: 3, Celda: A3, Vehiculo: Carro", // Aquí se define la cadena qr_code
+  //     status: "Cancelada",
+  //     reservation_date: "2025-03-27 16:45:00",
+  //     slot_number: "A3",
+  //     vehicle_id: "Carro",
+  //   },
+  // ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [isCreateSlotModalOpen, setIsCreateSlotModalOpen] = useState(false);
+  const [reservations, setReservations] = useState([]);
 
   const navigate = useNavigate();
   const data = JSON.parse(localStorage.getItem("user"));
   const role = data.role_id;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const reservation = await getReservation(data.id);
+        setReservations(reservation.body);
+      } catch (err) {
+        alert("Error al obtener reservas");
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -112,30 +126,38 @@ const Navbar = (setIsAuthenticated) => {
                   Mis reservas
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end">
-                  {reservations.slice(0, 4).map((reservation) => (
-                    <li key={reservation.id}>
-                      <a
-                        className="dropdown-item"
-                        href="#"
-                        onClick={() => handleOpenModal(reservation)} // Abre el modal al hacer clic
-                      >
-                        <div className="d-flex align-items-center">
-                          {/* Aquí usamos qr_code directamente para generar el QR */}
-                          <QRCodeCanvas
-                            value={reservation.qr_code} // Usamos la cadena qr_code para el valor del QR
-                            size={30} // Tamaño del código QR
-                            style={{ marginRight: "10px" }} // Espacio entre el QR y el texto
-                          />
-                          <div>
-                            <p style={{ margin: 0, fontSize: "12px" }}>
-                              {reservation.status} -{" "}
-                              {reservation.reservation_date}
-                            </p>
+                  {reservations.length > 0 ? (
+                    reservations.map((reservation) => (
+                      <li key={reservation.qr_code}>
+                        <a
+                          className="dropdown-item"
+                          href="#"
+                          onClick={() => handleOpenModal(reservation)} // Abre el modal al hacer clic
+                        >
+                          <div className="d-flex align-items-center">
+                            {/* Aquí usamos qr_code directamente para generar el QR */}
+                            <QRCodeCanvas
+                              value={reservation.qr_code} // Usamos la cadena qr_code para el valor del QR
+                              size={30} // Tamaño del código QR
+                              style={{ marginRight: "10px" }} // Espacio entre el QR y el texto
+                            />
+                            <div>
+                              <p style={{ margin: 0, fontSize: "12px" }}>
+                                {reservation.status} -{" "}
+                                {reservation.reservation_date}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </a>
-                    </li>
-                  ))}
+                        </a>
+                      </li>
+                    ))
+                  ) : (
+                    <div>
+                      <p style={{ margin: "10px", fontSize: "12px" }}>
+                        No se encontraron reservas
+                      </p>
+                    </div>
+                  )}
                 </ul>
               </li>
             </ul>
@@ -239,8 +261,7 @@ const Navbar = (setIsAuthenticated) => {
       {/* Usamos el componente QRCodeModal si una reserva está seleccionada */}
       {isModalOpen && (
         <QRCodeModal
-          selectedCell={selectedReservation}
-          reservationId={selectedReservation.id}
+          qrCode={selectedReservation.qr_code}
           handleCloseModal={handleCloseModal}
         />
       )}

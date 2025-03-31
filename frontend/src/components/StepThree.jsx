@@ -26,8 +26,8 @@ const StepThree = ({ selectedCell, handlePreviousStep }) => {
       user: user,
     };
     try {
-      const tilin = await createReservation(data);
-      const newReservationId = tilin.body.reservationId;
+      const response = await createReservation(data);
+      const newReservationId = response.body.reservationId;
       await updateReservation({
         id: newReservationId,
         qr_code: `Reserva ID: ${newReservationId}, Celda: ${selectedCell.slot_number}, Vehiculo: ${selectedCell.vehicle_type_id}`,
@@ -42,7 +42,7 @@ const StepThree = ({ selectedCell, handlePreviousStep }) => {
   };
 
   const handleCloseModal = () => {
-    setIsConfirmed(false); // Cierra el modal
+    setIsConfirmed(false);
     navigate(0);
   };
 

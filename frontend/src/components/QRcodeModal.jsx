@@ -1,7 +1,12 @@
 import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
-const QRCodeModal = ({ selectedCell, reservationId, handleCloseModal }) => {
+const QRCodeModal = ({
+  selectedCell,
+  reservationId,
+  handleCloseModal,
+  qrCode,
+}) => {
   const handleDownloadQR = () => {
     // Obtener el canvas de QR generado por QRCodeCanvas
     const canvas = document.getElementById("qr-code-canvas");
@@ -37,7 +42,11 @@ const QRCodeModal = ({ selectedCell, reservationId, handleCloseModal }) => {
             <div className="d-flex justify-content-center mb-3">
               <QRCodeCanvas
                 id="qr-code-canvas"
-                value={`Reserva ID: ${reservationId}, Celda: ${selectedCell.slot_number}, Vehiculo: ${selectedCell.vehicle_type_id}`}
+                value={
+                  qrCode
+                    ? qrCode
+                    : `Reserva ID: ${reservationId}, Celda: ${selectedCell.slot_number}, Vehiculo: ${selectedCell.vehicle_type_id}`
+                }
                 size={256} // Tamaño del QR
               />
             </div>

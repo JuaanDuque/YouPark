@@ -44,7 +44,7 @@ module.exports = function (dbinyectada) {
     return db.query(data, email);
   }
 
-  function getUsers(params = []) {
+  function getUsers(params) {
     const data = `
           SELECT 
             u.id, 

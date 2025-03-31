@@ -29,8 +29,24 @@ module.exports = function (dbinyectada) {
     return await db.update(TABLA, data);
   }
 
+  function selectReservation(param) {
+    console.log(param, "para ");
+    const data = `
+          SELECT 
+          r.qr_code,
+          rs.name AS status,
+          r.vehicle_id,
+          DATE_FORMAT(r.reservation_date, '%Y-%m-%d %H:%i:%s') AS reservation_date
+        FROM reservations r
+        JOIN reservationstatus rs ON r.status_id = rs.id
+        WHERE r.user_id = ?;
+        `;
+    return db.query(data, param);
+  }
+
   return {
     add,
     update,
+    selectReservation,
   };
 };
