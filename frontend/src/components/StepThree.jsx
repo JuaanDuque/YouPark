@@ -36,8 +36,8 @@ const StepThree = ({ selectedCell, handlePreviousStep }) => {
       setReservationId(newReservationId);
       setIsConfirmed(true);
     } catch (err) {
-      err;
-      alert("Error al crear la reservación");
+      console.log(err);
+      alert(err.body);
     }
   };
 
