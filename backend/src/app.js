@@ -8,6 +8,7 @@ const auth = require("./modules/auth/routes");
 const parkingslot = require("./modules/parkingslot/routes");
 const reservations = require("./modules/reservations/routes");
 const error = require("./network/errors");
+const { startCron } = require("./cron/updateReservationParkingslot");
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/api/auth", auth);
 app.use("/api/parkingslot", parkingslot);
 app.use("/api/reservations", reservations);
 app.use(error);
+startCron();
 
 module.exports = app;
