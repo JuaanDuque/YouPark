@@ -7,32 +7,6 @@ import { getReservation } from "../services/reservations/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = (setIsAuthenticated) => {
-  // const reservations = [
-  //   {
-  //     id: 1,
-  //     qr_code: "Reserva ID: 1, Celda: A1, Vehiculo: Carro", // Aquí se define la cadena qr_code
-  //     status: "Confirmada",
-  //     reservation_date: "2025-03-25 12:00:00",
-  //     slot_number: "A1",
-  //     vehicle_id: "Carro",
-  //   },
-  //   {
-  //     id: 2,
-  //     qr_code: "Reserva ID: 2, Celda: M2, Vehiculo: Moto", // Aquí se define la cadena qr_code
-  //     status: "Pendiente",
-  //     reservation_date: "2025-03-26 14:30:00",
-  //     slot_number: "M2",
-  //     vehicle_id: "Moto",
-  //   },
-  //   {
-  //     id: 3,
-  //     qr_code: "Reserva ID: 3, Celda: A3, Vehiculo: Carro", // Aquí se define la cadena qr_code
-  //     status: "Cancelada",
-  //     reservation_date: "2025-03-27 16:45:00",
-  //     slot_number: "A3",
-  //     vehicle_id: "Carro",
-  //   },
-  // ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [isCreateSlotModalOpen, setIsCreateSlotModalOpen] = useState(false);
@@ -87,7 +61,7 @@ const Navbar = (setIsAuthenticated) => {
         <div className="container-fluid">
           <Link className="navbar-brand" to="/home">
             <img
-              src="/public/logoRecorte.png"
+              src="/logoRecorte.png"
               className="rounded-circle w-image-home"
               alt="Logo"
               style={{ backgroundColor: "#ffffff" }}
@@ -261,6 +235,7 @@ const Navbar = (setIsAuthenticated) => {
       {/* Usamos el componente QRCodeModal si una reserva está seleccionada */}
       {isModalOpen && (
         <QRCodeModal
+          selectedCell={selectedReservation}
           qrCode={selectedReservation.qr_code}
           handleCloseModal={handleCloseModal}
         />

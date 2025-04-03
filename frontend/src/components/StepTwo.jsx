@@ -50,11 +50,7 @@ const StepTwo = ({
             }}
           >
             <img
-              src={
-                cell.vehicle_type_id === 1
-                  ? "/public/carro.png"
-                  : "/public/moto.png"
-              }
+              src={cell.vehicle_type_id === 1 ? "/carro.png" : "/moto.png"}
               style={{
                 width: "30px",
                 marginBottom: "10px",

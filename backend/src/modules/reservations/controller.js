@@ -76,7 +76,9 @@ module.exports = function (dbinyectada) {
     const data = `
     SELECT id 
     FROM reservations
-    WHERE user_id = ? AND status_id = 1 AND vehicle_id = ?
+    WHERE user_id = ? 
+      AND vehicle_id = ? 
+      AND (status_id = 1 OR status_id = 5)
     LIMIT 1;
   `;
     return db
@@ -84,10 +86,46 @@ module.exports = function (dbinyectada) {
       .then((rows) => (rows.length > 0 ? rows[0] : null));
   }
 
+  async function updateReservationQR({ id, type }) {
+    if (Number(type) === 1) {
+      // Actualización para entrada: se registra check_in solo si status_id es 1.
+      const query = `
+        UPDATE reservations
+        SET check_in = NOW(),status_id = 5
+        WHERE id = ? AND status_id = 1;
+      `;
+      const result = await db.query(query, [id]);
+      return {
+        message: "Check-in actualizado",
+        affectedRows: result.affectedRows,
+      };
+    } else if (Number(type) === 0) {
+      const query = `
+        UPDATE reservations r
+        JOIN parkingslot p ON r.slot_id = p.id
+        SET r.check_out = NOW(),
+            r.status_id = 4,
+            p.status = 1
+        WHERE r.id = ?;
+      `;
+      const result = await db.query(query, [id]);
+      if (result.affectedRows === 0) {
+        throw new Error("Reserva no encontrada o no se pudo actualizar.");
+      }
+      return {
+        message: "Check-out y slot actualizados",
+        affectedRows: result.affectedRows,
+      };
+    } else {
+      throw new Error("Tipo inválido. Debe ser 1 (entrada) o 0 (salida).");
+    }
+  }
+
   return {
     add,
     update,
     selectReservation,
     cancelReservation,
+    updateReservationQR,
   };
 };

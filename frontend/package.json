@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.8.2",
     "bootstrap": "^5.3.3",
+    "jsqr": "^1.4.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
