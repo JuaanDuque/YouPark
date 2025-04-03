@@ -36,7 +36,6 @@ const StepThree = ({ selectedCell, handlePreviousStep }) => {
       setReservationId(newReservationId);
       setIsConfirmed(true);
     } catch (err) {
-      console.log(err);
       alert(err.body);
     }
   };

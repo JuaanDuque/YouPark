@@ -26,7 +26,6 @@ const ParkingSlotTable = ({
   const currentSlots = parkingslots.slice(indexOfFirstSlot, indexOfLastSlot);
 
   const totalPages = Math.ceil(parkingslots.length / pageSize);
-
   return (
     <>
       <table className="table table-striped table-responsive">
@@ -47,7 +46,7 @@ const ParkingSlotTable = ({
                 <td>{slot.id}</td>
                 <td>{slot.slot_number}</td>
                 <td>{slot.location}</td>
-                <td>{slot.vehicle_type === 1 ? "Carro" : "Moto"}</td>
+                <td>{slot.vehicle_type_id === 1 ? "Carro" : "Moto"}</td>
                 <td>{slot.status === 1 ? "Activo" : "Inactivo"}</td>
                 <td>
                   <button

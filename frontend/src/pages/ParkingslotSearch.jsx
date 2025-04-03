@@ -1,23 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ParkingSlotTable from "../components/ParkingslotTable";
+import { getParkingslotsAll } from "../services/parkingslot/api";
 
 const ParkingSlotSearch = () => {
-  // Datos simulados de los parkingslots
-  const [parkingslots] = useState([
-    { id: 1, slot_number: "A1", vehicle_type: 1, location: "1", status: 1 },
-    { id: 2, slot_number: "B2", vehicle_type: 2, location: "2", status: 1 },
-    { id: 3, slot_number: "C3", vehicle_type: 1, location: "3", status: 0 },
-    { id: 4, slot_number: "D4", vehicle_type: 1, location: "1", status: 1 },
-    { id: 5, slot_number: "E5", vehicle_type: 2, location: "2", status: 0 },
-    { id: 6, slot_number: "F6", vehicle_type: 1, location: "3", status: 1 },
-  ]);
-
+  const [parkingslots, setParkingSlots] = useState([]);
   const [filteredSlots, setFilteredSlots] = useState(parkingslots); // Slots filtrados
   const [searchQuery, setSearchQuery] = useState(""); // Valor de búsqueda
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const pageSize = 5; // Número de registros por página
 
-  // Filtrar los parkingslots cuando el usuario escribe algo
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getParkingslotsAll();
+        setParkingSlots(data.body);
+        setFilteredSlots(data.body);
+      } catch (err) {
+        alert("Error al obtener celdas");
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
@@ -25,9 +29,9 @@ const ParkingSlotSearch = () => {
     // Filtrar los parkingslots por slot_number, location o vehicle_type
     const result = parkingslots.filter((slot) => {
       return (
+        slot.id.toString().includes(query) ||
         slot.slot_number.toLowerCase().includes(query) || // Filtra por slot_number
-        slot.location.toLowerCase().includes(query) || // Filtra por location
-        (slot.vehicle_type && slot.vehicle_type.toString().includes(query)) // Filtra por vehicle_type
+        slot.location.toLowerCase().includes(query) // Filtra por location
       );
     });
 
@@ -49,7 +53,7 @@ const ParkingSlotSearch = () => {
       <input
         type="text"
         className="form-control mb-3 mt-3"
-        placeholder="Buscar por slot, ubicación o tipo de vehículo"
+        placeholder="Buscar por id, slot o ubicación"
         value={searchQuery}
         onChange={handleSearch}
       />
