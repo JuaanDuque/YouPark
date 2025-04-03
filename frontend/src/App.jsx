@@ -35,6 +35,7 @@ const App = () => {
         path="/login"
         element={<Login setIsAuthenticated={setIsAuthenticated} />}
       />
+      <Route path="/" element={<Navigate to="/home" />} />
       {/* Rutas protegidas dentro del Layout */}
       <Route
         path="/"

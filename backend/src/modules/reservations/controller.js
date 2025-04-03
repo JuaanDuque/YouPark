@@ -52,6 +52,18 @@ module.exports = function (dbinyectada) {
     return db.query(data, param);
   }
 
+  function cancelReservation(param) {
+    const data = `
+          UPDATE reservations r
+            JOIN parkingslot p ON r.slot_id = p.id
+            SET 
+              r.status_id = 2,        
+              p.status = 1            
+            WHERE r.id = ?;
+        `;
+    return db.query(data, param);
+  }
+
   function selectActiveReservation(reservation) {
     let vehicleId;
     if (reservation.vehicle_type_id === reservation.user.vehicle1Type) {
@@ -76,5 +88,6 @@ module.exports = function (dbinyectada) {
     add,
     update,
     selectReservation,
+    cancelReservation,
   };
 };

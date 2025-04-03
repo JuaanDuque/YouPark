@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
+import { useNavigate } from "react-router-dom";
+import { cancelReservation } from "../services/reservations/api";
 
 const QRCodeModal = ({
   selectedCell,
@@ -7,6 +9,7 @@ const QRCodeModal = ({
   handleCloseModal,
   qrCode,
 }) => {
+  const navigate = useNavigate();
   const handleDownloadQR = () => {
     // Obtener el canvas de QR generado por QRCodeCanvas
     const canvas = document.getElementById("qr-code-canvas");
@@ -17,6 +20,27 @@ const QRCodeModal = ({
     link.click(); // Simulamos el clic para descargar la imagen
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!reservationId) {
+        reservationId = qrCode.split(",")[0].split(":")[1].trim();
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleCancelClick = async () => {
+    try {
+      if (!reservationId) {
+        reservationId = qrCode.split(",")[0].split(":")[1].trim();
+      }
+      await cancelReservation({ id: parseInt(reservationId) });
+      alert("Se canceló de manera exitosa la reservación");
+      navigate(0);
+    } catch {
+      alert("No se pudo cancelar la reservación");
+    }
+  };
   return (
     <div
       className="modal show"
@@ -35,9 +59,15 @@ const QRCodeModal = ({
             ></button>
           </div>
           <div className="modal-body d-flex flex-column align-items-center justify-content-center">
-            <p className="text-center">¡Reserva exitosa!</p>
             <p className="text-center">
-              Recuerda presentar el código QR en la talanquera
+              {selectedCell.status != 1
+                ? `Su reserva está ${selectedCell.status}`
+                : "¡Reserva exitosa!"}
+            </p>
+            <p className="text-center">
+              {selectedCell.status === 1 || selectedCell.status === "Activa"
+                ? "Recuerda presentar el código QR en la talanquera"
+                : "¡Pero puedes volver a reservar!"}
             </p>
             <div className="d-flex justify-content-center mb-3">
               <QRCodeCanvas
@@ -56,6 +86,15 @@ const QRCodeModal = ({
             >
               Descargar Código QR
             </button>
+            {(selectedCell.status === 1 ||
+              selectedCell.status === "Activa") && (
+              <button
+                className="btn btn-danger mt-3 mb-3"
+                onClick={handleCancelClick}
+              >
+                Cancelar Reserva
+              </button>
+            )}
           </div>
         </div>
       </div>
