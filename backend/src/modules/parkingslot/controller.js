@@ -7,7 +7,11 @@ module.exports = function (dbinyectada) {
     db = require("../../DB/mysql");
   }
 
-  function selectAllVehicle(data) {
+  function selectAllVehicle() {
+    return db.selectAll(TABLA);
+  }
+
+  function selectAllVehicleType(data) {
     return db.selectObject(TABLA, data);
   }
 
@@ -15,8 +19,14 @@ module.exports = function (dbinyectada) {
     return await db.update(TABLA, data);
   }
 
+  async function add(data) {
+    return await db.add(TABLA, data);
+  }
+
   return {
     selectAllVehicle,
+    selectAllVehicleType,
     update,
+    add,
   };
 };

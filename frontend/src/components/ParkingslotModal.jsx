@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  createParkingslot,
+  updateParkingSlot,
+} from "../services/parkingslot/api";
 
 const ParkingSlotModal = ({ show, handleClose, parkingSlot }) => {
   const [formData, setFormData] = useState({
+    id: 0,
     slot_number: "",
     location: "1",
     status: 1,
-    vehicle_type: 1, // Tipo de vehículo: 1 para Carro, 2 para Moto
+    vehicle_type_id: 1,
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (parkingSlot) {
       setFormData({
+        id: parkingSlot.id,
         slot_number: parkingSlot.slot_number,
         location: parkingSlot.location,
         status: parkingSlot.status,
-        vehicle_type: parkingSlot.vehicle_type || 1, // Por defecto Carro
+        vehicle_type_id: parkingSlot.vehicle_type_id,
       });
     }
   }, [parkingSlot]);
@@ -27,8 +36,40 @@ const ParkingSlotModal = ({ show, handleClose, parkingSlot }) => {
     });
   };
 
-  const handleSaveChanges = () => {
-    handleClose();
+  const handleSaveChanges = async () => {
+    if (formData.slot_number.length < 2) {
+      alert("El slot_number debe tener al menos dos caracteres.");
+      return;
+    }
+    const firstChar = formData.slot_number[0].toUpperCase();
+    const secondChar = formData.slot_number[1];
+    const expectedFirstChar = formData.vehicle_type_id === "1" ? "A" : "M";
+    if (firstChar !== expectedFirstChar) {
+      alert(
+        `El primer carácter debe ser "${expectedFirstChar}" para el vehículo seleccionado.`
+      );
+      return;
+    }
+
+    if (secondChar !== formData.location) {
+      alert(
+        "El segundo carácter debe corresponder a la ubicación seleccionada."
+      );
+      return;
+    }
+    try {
+      if (formData.id != 0) {
+        await updateParkingSlot(formData);
+        alert("Se ha actualizado con exito");
+      } else {
+        await createParkingslot(formData);
+        alert("Se ha creado con exito");
+      }
+      handleClose();
+      navigate(0);
+    } catch {
+      alert("Error interno, vuelvalo a intentar más tarde.");
+    }
   };
 
   if (!show) return null;
@@ -56,7 +97,12 @@ const ParkingSlotModal = ({ show, handleClose, parkingSlot }) => {
                   value={formData.slot_number}
                   onChange={handleInputChange}
                   required
+                  style={{ textTransform: "uppercase" }}
                 />
+                <small className="form-text text-muted">
+                  El primer carácter es A si es carro o M si es moto, y el
+                  segundo carácter debe ser la ubicación.
+                </small>
               </div>
 
               <div className="mb-3">
@@ -92,8 +138,8 @@ const ParkingSlotModal = ({ show, handleClose, parkingSlot }) => {
                 <label className="form-label">Tipo de Vehículo</label>
                 <select
                   className="form-select"
-                  name="vehicle_type"
-                  value={formData.vehicle_type}
+                  name="vehicle_type_id"
+                  value={formData.vehicle_type_id}
                   onChange={handleInputChange}
                   required
                 >

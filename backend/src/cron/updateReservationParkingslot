@@ -9,7 +9,7 @@ function startCron() {
         JOIN parkingslot ps ON r.slot_id = ps.id
         SET r.status_id = 3, ps.status = 1
         WHERE r.grace_period < NOW()
-          AND r.status_id != 3
+          AND r.status_id = 1
           AND r.check_in IS NULL
       `;
 
