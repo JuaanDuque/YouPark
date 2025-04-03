@@ -34,7 +34,7 @@ const Login = ({ setIsAuthenticated }) => {
     <div className="container-container-bg d-flex justify-content-center align-items-center no-scroll">
       <div className="p-4" style={{ width: "400px" }}>
         <img
-          src="/public/logo.png"
+          src="/logo.png"
           className="d-block mx-auto w-logo mb-4"
           alt="Logo"
         ></img>
