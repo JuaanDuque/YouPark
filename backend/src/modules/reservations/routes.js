@@ -6,6 +6,7 @@ const controller = require("./index");
 router.post("/", addReservation);
 router.get("/:id", selectReservation);
 router.put("/:id", updateReservation);
+router.put("/cancel/:id", cancelReservation);
 
 async function updateReservation(req, res, next) {
   try {
@@ -16,9 +17,17 @@ async function updateReservation(req, res, next) {
   }
 }
 
+async function cancelReservation(req, res, next) {
+  try {
+    const result = await controller.cancelReservation(req.body.data.id);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function selectReservation(req, res, next) {
   try {
-    console.log(req, "req<<<<<");
     const items = await controller.selectReservation(req.params.id);
     response.success(req, res, items, 200);
   } catch (err) {

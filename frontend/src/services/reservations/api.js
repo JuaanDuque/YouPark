@@ -31,3 +31,17 @@ export const updateReservation = async (data) => {
     throw error.response?.data || { message: "Error de conexión" };
   }
 };
+
+export const cancelReservation = async (data) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/reservations/cancel/${data.id}`,
+      {
+        data,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Error de conexión" };
+  }
+};
