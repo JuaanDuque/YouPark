@@ -1,0 +1,29 @@
+const cron = require("node-cron");
+const db = require("../DB/mysql");
+
+// Programar una tarea que se ejecute cada minuto
+function startCron() {
+  cron.schedule("*/2 * * * *", () => {
+    const sql = `
+        UPDATE reservations r
+        JOIN parkingslot ps ON r.slot_id = ps.id
+        SET r.status_id = 3, ps.status = 1
+        WHERE r.grace_period < NOW()
+          AND r.status_id != 3
+          AND r.check_in IS NULL
+      `;
+
+    db.query(sql, (err, result) => {
+      if (err) {
+        console.error("Error actualizando reservas y parkingslot:", err);
+      } else {
+        console.log(
+          "Reservas y parkingslots actualizados:",
+          result.affectedRows
+        );
+      }
+    });
+  });
+}
+
+module.exports = { startCron };
