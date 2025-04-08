@@ -46,11 +46,9 @@ async function addReservation(req, res, next) {
 }
 
 async function updateReservationQR(req, res, next) {
-  console.log(req, "req");
   try {
     const { type } = req.body.data;
     const { id } = req.params;
-    console.log(id, "id>>>>", type);
     const result = await controller.updateReservationQR({ id, type });
     res.status(200).json(result);
   } catch (err) {

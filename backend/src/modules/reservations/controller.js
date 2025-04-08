@@ -106,7 +106,7 @@ module.exports = function (dbinyectada) {
         SET r.check_out = NOW(),
             r.status_id = 4,
             p.status = 1
-        WHERE r.id = ?;
+        WHERE r.id = ? AND status_id = 5;
       `;
       const result = await db.query(query, [id]);
       if (result.affectedRows === 0) {

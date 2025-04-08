@@ -50,13 +50,11 @@ const QRreadEntranceExit = ({ isOpen, onClose, type }) => {
         if (code) {
           setQrContent(code.data);
           const qrId = code.data;
-          console.log(qrId.split(",")[0].split(":")[1].trim(), "qr");
           try {
             await updateReservationQR({
               id: qrId.split(",")[0].split(":")[1].trim(),
               type: type,
             });
-            console.log("QR Code content:", code.data);
             if (type == 1) {
               alert("Bienvenido a la unidad.");
             } else {
@@ -123,12 +121,6 @@ const QRreadEntranceExit = ({ isOpen, onClose, type }) => {
                 {type === 1 ? "Leer QR  de entrada" : "Leer QR de salida"}
               </button>
             </form>
-            {qrContent && (
-              <div className="mt-3">
-                <p>Contenido del QR:</p>
-                <pre>{qrContent}</pre>
-              </div>
-            )}
           </div>
           <div className="modal-footer">
             <button
