@@ -19,3 +19,14 @@ Frontend: React.
 Backend: Node.js con Express.
 Base de Datos: MySQL.
 Autenticación: JWT para seguridad en sesiones.
+
+Configuración del Backend (todo por consola)
+cd backend 
+npm install  # Instalar dependencias 
+npm run dev  # Ejecutar el servidor en modo desarrollo 
+
+Configuración del Frontend (todo por consola)
+
+cd frontend 
+npm install  # Instalar dependencias 
+npm run dev  # Iniciar el servidor de desarrollo 
